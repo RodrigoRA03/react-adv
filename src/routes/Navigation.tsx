@@ -24,8 +24,7 @@ export const Navigation = () => {
                  <li key={path}>
                   <NavLink 
                      to={path} 
-                     activeClassName="nav-active" 
-                     exact
+                     activeClassName="nav-active"
                   >
                     {name}
                   </NavLink>
@@ -40,7 +39,7 @@ export const Navigation = () => {
             renders the first one that matches the current URL. */}
         <Switch>
           {
-            routes.map(({path , Component})=>(
+            routes.map(({path , component:Component})=>(
               <Route 
                  key={path} 
                  path={`${path}`} 
