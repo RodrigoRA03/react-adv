@@ -1,7 +1,7 @@
-import { createContext, CSSProperties, ReactElement } from 'react';
+import { createContext, CSSProperties } from 'react';
 import useProduct from '../hooks/useProduct';
 import { ProductImage , ProductButtons , ProductTitle } from './index';
-import { onChangeArgs, Product, ProductContextProps } from '../interface/interfaces';
+import { InitialValues, onChangeArgs, Product, ProductCardHandlers, ProductContextProps } from '../interface/interfaces';
 import styles from '../styles/styles.module.css';
 
 export const ProductContext = createContext({} as ProductContextProps);
@@ -10,22 +10,24 @@ const {Provider} = ProductContext;
 
 export interface Props{
   product:Product;
-  children?:ReactElement | ReactElement[];
+  children:(arg:ProductCardHandlers)=> JSX.Element;
   className?:string;
   style?:CSSProperties;
   onChange?:( args: onChangeArgs )=>void;
   value?:number;
+  initialValues: InitialValues
 }
 
 
-export const ProductCard = ({ children , product , className , style , value ,  onChange }:Props) => {
+export const ProductCard = ({ children , product , className , style , value ,  onChange , initialValues }:Props) => {
 
-    const { counter ,  increaseBy } = useProduct({onChange , product , value});
+    const { counter , maxCount , isMaxCountReached , increaseBy , reset} = useProduct({onChange , product , value , initialValues});
 
     return (
       <Provider
         value={{
-          counter, 
+          counter,
+          maxCount, 
           increaseBy, 
           product
         }}
@@ -34,7 +36,15 @@ export const ProductCard = ({ children , product , className , style , value ,  
            className={`${styles.productCard} ${className}`}
            style={style}
         >
-            {children}
+            { children({
+               count:counter,
+               isMaxCountReached,
+               maxCount:initialValues?.maxCount,
+               product,
+               increaseBy,
+               reset
+
+            }) }
         </div>
       </Provider>
         
